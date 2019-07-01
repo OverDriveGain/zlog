@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include "zlog.h"
 
+#ifdef memory_conf
+#include "test_record.conf.h"
+#endif
+
 int output(zlog_msg_t *msg)
 {
 	printf("[mystd]:[%s][%s][%ld]\n", msg->path, msg->buf, (long)msg->len);
@@ -20,7 +24,11 @@ int main(int argc, char** argv)
 	int rc;
 	zlog_category_t *zc;
 
+#ifdef test_record_conf
+	rc = zlog_init(test_record_conf);
+#else
 	rc = zlog_init("test_record.conf");
+#endif
 	if (rc) {
 		printf("init failed\n");
 		return -1;

@@ -15,6 +15,10 @@
 #include "zlog.h"
 #include "stdlib.h"
 
+#ifdef memory_conf
+#include "test_hex.conf.h"
+#endif
+
 static int ReadTotalFile( FILE * fp , char ** ptr , long * len )
 {
         long            fileLen ;
@@ -84,7 +88,11 @@ int main(int argc, char** argv)
 	
 	zlog_category_t *zc;
 
+#ifdef test_hex_conf
+	rc = zlog_init(test_hex_conf);
+#else
 	rc = zlog_init("test_hex.conf");
+#endif
 	if (rc) {
 		printf("init failed\n");
 		return -1;

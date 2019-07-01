@@ -9,12 +9,19 @@
 #include <stdio.h>
 #include "test_level.h"
 
+#ifdef memory_conf
+#include "test_level.conf.h"
+#endif
 int main(int argc, char** argv)
 {
 	int rc;
 	zlog_category_t *zc;
 
+#ifdef test_level_conf
+	rc = zlog_init(test_level_conf);
+#else
 	rc = zlog_init("test_level.conf");
+#endif
 	if (rc) {
 		printf("init failed\n");
 		return -1;

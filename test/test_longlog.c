@@ -11,6 +11,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#ifdef memory_conf
+#include "test_longlog.conf.h"
+#endif
+
 #define str "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
 #define str2 str str
 #define str4 str2 str2
@@ -30,7 +34,11 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
+#ifdef test_longlog_conf
+	rc = zlog_init(test_longlog_conf);
+#else
 	rc = zlog_init("test_longlog.conf");
+#endif
 	if (rc) {
 		printf("init failed\n");
 		return -1;

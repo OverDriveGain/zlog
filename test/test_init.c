@@ -14,13 +14,22 @@
 
 #include "zlog.h"
 
+#ifdef memory_conf
+#include "test_init.conf.h"
+#include "test_init.2.conf.h"
+#endif
+
 int main(int argc, char** argv)
 {
 	int rc;
-	
+
 	zlog_category_t *zc;
 
+#ifdef memory_conf
+	rc = zlog_init(test_init_conf);
+#else
 	rc = zlog_init("test_init.conf");
+#endif
 	if (rc) {
 		printf("init fail");
 		return -2;
@@ -33,7 +42,11 @@ int main(int argc, char** argv)
 	}
 	zlog_info(zc, "before update");
 	sleep(1);
-	rc = zlog_reload("test_init.2.conf");
+#ifdef memory_conf
+    rc = zlog_reload(test_init_2_conf);
+#else
+    rc = zlog_reload("test_init.2.conf");
+#endif
 	if (rc) {
 		printf("update fail\n");
 	}
@@ -42,8 +55,12 @@ int main(int argc, char** argv)
 	zlog_fini();
 
 	sleep(1);
-	zlog_init("test_init.conf");
-	zc = zlog_get_category("my_cat");
+#ifdef test_init_conf
+    zlog_init(test_init_conf);
+#else
+    zlog_init("test_init.conf");
+#endif
+    zc = zlog_get_category("my_cat");
 	if (!zc) {
 		printf("zlog_get_category fail\n");
 		zlog_fini();

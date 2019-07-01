@@ -14,6 +14,11 @@
 
 #include "zlog.h"
 
+#ifdef memory_conf
+#include "test_leak.conf.h"
+#include "test_leak.2.conf.h"
+#endif
+
 int main(int argc, char** argv)
 {
 	int rc;
@@ -25,14 +30,22 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
+#ifdef memory_conf
+	rc = zlog_init(test_leak_conf);
+#else
 	rc = zlog_init("test_leak.conf");
+#endif
 
 	k = atoi(argv[1]);
 	while (k-- > 0) {
 		i = rand();
 		switch (i % 4) {
 		case 0:
-			rc = dzlog_init("test_leak.conf", "xxx");
+#ifdef memory_conf
+            rc = dzlog_init(test_leak_conf, "xxx");
+#else
+            rc = dzlog_init("test_leak.conf", "xxx");
+#endif
 			dzlog_info("init, rc=[%d]", rc);
 			break;
 		case 1:
@@ -40,8 +53,12 @@ int main(int argc, char** argv)
 			dzlog_info("reload null, rc=[%d]", rc);
 			break;
 		case 2:
+#ifdef memory_conf
+            rc = zlog_reload(test_leak_2_conf);
+#else
 			rc = zlog_reload("test_leak.2.conf");
-			dzlog_info("reload 2, rc=[%d]", rc);
+#endif
+            dzlog_info("reload 2, rc=[%d]", rc);
 			break;
 		case 3:
 			zlog_fini();

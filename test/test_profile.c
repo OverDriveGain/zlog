@@ -9,11 +9,19 @@
 #include <stdio.h>
 #include "zlog.h"
 
+#ifdef memory_conf
+#include "test_profile.conf.h"
+#endif
+
 int main(int argc, char** argv)
 {
 	int rc;
 
+#ifdef test_profile_conf
+	rc = dzlog_init(test_profile_conf, "my_cat");
+#else
 	rc = dzlog_init("test_profile.conf", "my_cat");
+#endif
 	if (rc) {
 		printf("init failed\n");
 		return -1;

@@ -17,6 +17,10 @@
 
 #include "zlog.h"
 
+#ifdef memory_conf
+#include "test_press_zlog2.conf.h"
+#endif
+
 static long loop_count;
 
 
@@ -75,7 +79,11 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
-        rc = zlog_init("test_press_zlog2.conf");
+#ifdef test_press_zlog2_conf
+	rc = zlog_init(test_press_zlog2_conf);
+#else
+	rc = zlog_init("test_press_zlog2.conf");
+#endif
         if (rc) {
                 printf("init failed\n");
                 return 2;

@@ -14,13 +14,22 @@
 
 #include "zlog.h"
 
+#ifdef memory_conf
+#include "test_conf.conf.h"
+#endif
+
 int main(int argc, char** argv)
 {
 	int rc;
 	zlog_category_t *zc;
 	
 
+#ifdef test_conf_conf
+	printf("QWEQWE");
+	rc = zlog_init(test_conf_conf);
+#else
 	rc = zlog_init("test_conf.conf");
+#endif
 	if (rc) {
 		printf("init failed, try zlog-chk-conf test_conf.conf for more detail\n");
 		return -1;

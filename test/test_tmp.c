@@ -7,15 +7,23 @@
  */
 
 #include <stdio.h>
-#include "zlog.h"
 #include <unistd.h>
+#include "zlog.h"
+
+#ifdef memory_conf
+#include "test_tmp.conf.h"
+#endif
 
 int main(int argc, char** argv)
 {
 	int rc;
 	zlog_category_t *zc;
 
+#ifdef test_tmp_conf
+	rc = zlog_init(test_tmp_conf);
+#else
 	rc = zlog_init("test_tmp.conf");
+#endif
 	if (rc) {
 		printf("init failed\n");
 		return -1;
