@@ -24,15 +24,28 @@ exe = 		\
 	test_profile \
 	test_category
 
+
 all     :       $(exe)
 
 $(exe)  :       %:%.o
 	gcc -O2 -g -o $@ $^ -L../src -lzlog -lpthread -Wl,-rpath ../src
 
 .c.o	:
-	gcc -O2 -g -Wall -D_GNU_SOURCE -o $@ -c $< -I. -I../src
+	gcc -O2 -g -Wall -D_GNU_SOURCE $(CFLAGS) -o $@ -c $< -I. -I../src
+
+CONF = $(wildcard *.conf)
+CONF_H = $(CONF:%.conf=%.conf.h)
+
+config  :      clean $(CONF_H) $(exe)
+	$(eval CFLAGS = -Dmemory_conf)
+
+%.conf.h:       %.conf
+	touch $@
+	cat $^ > $@
+	sed -i -E ':a;N;$$!ba;s/\r{0,1}\n/\\n/g;s/"/\\"/g' $@
+	sed -i '1s/^/#define $(subst _h, ,$(subst .,_,$@))"/; $$ s/$$/"/' $@
 
 clean	:
-	rm -f press.log* *.o $(exe)
+	rm -f press.log* *.o $(exe) $(CONF_H)
 
 .PHONY : clean all
